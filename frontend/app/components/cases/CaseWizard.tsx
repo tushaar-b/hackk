@@ -14,6 +14,7 @@ import {
   CheckCircle2, 
   Sparkles
 } from 'lucide-react';
+import { ShinyButton } from '@/components/ui/shiny-button';
 
 interface AuthorityState {
   statuteRef: string;
@@ -26,6 +27,8 @@ interface AuthorityState {
 
 interface CaseWizardProps {
   currentStep?: 1 | 2 | 3;
+  initialSeedAddress?: string;
+  initialAuthority?: Partial<AuthorityState>;
   onStepChange?: (step: 1 | 2 | 3) => void;
   onComplete?: (caseId: string, seedAddress: string, firNumber: string, ioDesignation: string) => void;
 }
@@ -61,10 +64,10 @@ const STATUTE_OPTIONS = [
   }
 ];
 
-
-
 export default function CaseWizard({ 
   currentStep: propStep, 
+  initialSeedAddress = '',
+  initialAuthority,
   onStepChange, 
   onComplete 
 }: CaseWizardProps) {
@@ -77,15 +80,15 @@ export default function CaseWizard({
   };
 
   const [authority, setAuthority] = useState<AuthorityState>({
-    statuteRef: 'Sec 94 BNSS',
-    firNumber: '',
-    policeStation: '',
-    ioDesignation: '',
-    jurisdictionBench: '',
-    incidentType: ''
+    statuteRef: initialAuthority?.statuteRef || 'Sec 94 BNSS',
+    firNumber: initialAuthority?.firNumber || '',
+    policeStation: initialAuthority?.policeStation || '',
+    ioDesignation: initialAuthority?.ioDesignation || '',
+    jurisdictionBench: initialAuthority?.jurisdictionBench || '',
+    incidentType: initialAuthority?.incidentType || ''
   });
 
-  const [seedAddress, setSeedAddress] = useState('');
+  const [seedAddress, setSeedAddress] = useState(initialSeedAddress);
   const [disputedAmount, setDisputedAmount] = useState('');
 
   const detectChain = (addr: string) => {
@@ -125,15 +128,19 @@ export default function CaseWizard({
       {/* Step Header Indicator */}
       <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200">
         <div className="flex items-center space-x-3">
-          <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#1B729E] text-white font-mono text-xs font-bold shadow-xs">
-            0{currentStep}
+          <div className="w-9 h-9 rounded-xl overflow-hidden bg-white border border-slate-200 p-0.5 flex items-center justify-center shadow-xs shrink-0">
+            <img src="/logo.png" alt="Phantasm" className="w-full h-full object-contain" />
           </div>
           <div>
-            <span className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold block">Case Initialization</span>
+            <div className="flex items-center space-x-2">
+              <span className="text-[10px] uppercase tracking-wider text-[#1B729E] font-bold font-mono">PHANTASM CASE SETUP</span>
+              <span className="text-slate-300">•</span>
+              <span className="text-[10px] font-mono text-slate-500 font-semibold">STAGE 0{currentStep} / 03</span>
+            </div>
             <div className="text-sm font-bold text-slate-900">
-              {currentStep === 1 && "Step 1 of 3: Statutory Authority & Case FIR"}
-              {currentStep === 2 && "Step 2 of 3: Police Station & Investigating Officer"}
-              {currentStep === 3 && "Step 3 of 3: Target Address & Resolution Launch"}
+              {currentStep === 1 && "Step 1: Statutory Authority & Case FIR"}
+              {currentStep === 2 && "Step 2: Police Station & Investigating Officer"}
+              {currentStep === 3 && "Step 3: Target Address & Resolution Launch"}
             </div>
           </div>
         </div>
@@ -252,14 +259,16 @@ export default function CaseWizard({
               <span>Lawful authority validated</span>
             </div>
 
-            <button
+            <ShinyButton
               onClick={handleNext}
               disabled={!isStep1Valid}
-              className="px-6 py-2.5 rounded-lg font-semibold text-sm flex items-center space-x-2 transition-all duration-150 select-none bg-[#1B729E] hover:bg-[#155E82] text-white shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
+              variant="brand"
+              size="md"
+              shape="rounded"
             >
               <span>Continue</span>
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </ShinyButton>
           </div>
         </div>
       )}
@@ -337,22 +346,26 @@ export default function CaseWizard({
 
           {/* Step 2 Footer Navigation */}
           <div className="flex items-center justify-between pt-5 border-t border-slate-200">
-            <button
+            <ShinyButton
               onClick={handleBack}
-              className="px-4 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 hover:bg-slate-100 flex items-center space-x-1.5 transition-all"
+              variant="outline"
+              size="sm"
+              shape="rounded"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back</span>
-            </button>
+            </ShinyButton>
 
-            <button
+            <ShinyButton
               onClick={handleNext}
               disabled={!isStep2Valid}
-              className="px-6 py-2.5 rounded-lg font-semibold text-sm flex items-center space-x-2 transition-all duration-150 select-none bg-[#1B729E] hover:bg-[#155E82] text-white shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
+              variant="brand"
+              size="md"
+              shape="rounded"
             >
               <span>Continue to Seed Target</span>
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </ShinyButton>
           </div>
         </div>
       )}
@@ -415,8 +428,6 @@ export default function CaseWizard({
                 </div>
               )}
             </div>
-
-
           </div>
 
           {/* Disputed Amount & Threshold */}
@@ -452,23 +463,27 @@ export default function CaseWizard({
 
           {/* Step 3 Footer Actions */}
           <div className="flex items-center justify-between pt-5 border-t border-slate-200">
-            <button
+            <ShinyButton
               onClick={handleBack}
-              className="px-4 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 hover:bg-slate-100 flex items-center space-x-1.5 transition-all"
+              variant="outline"
+              size="sm"
+              shape="rounded"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back</span>
-            </button>
+            </ShinyButton>
 
-            <button
+            <ShinyButton
               onClick={handleFinalSubmit}
               disabled={!isStep3Valid}
-              className="px-7 py-2.5 rounded-lg font-bold text-sm flex items-center space-x-2 transition-all duration-150 select-none bg-[#1B729E] hover:bg-[#155E82] text-white shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
+              variant="brand"
+              size="md"
+              shape="rounded"
             >
               <Sparkles className="w-4 h-4" />
               <span>Initialize Graph Engine</span>
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </ShinyButton>
           </div>
         </div>
       )}

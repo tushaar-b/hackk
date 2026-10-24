@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { ShinyButton } from "@/components/ui/shiny-button";
+import { ShieldCheck } from "lucide-react";
 
 interface SignOffPanelProps {
   confidenceScore: number;
@@ -49,13 +51,17 @@ export default function SignOffPanel({ confidenceScore, recipientDesignation, on
         />
       </div>
 
-      <button 
+      <ShinyButton 
         onClick={handleSignOff}
         disabled={totp.length !== 6}
-        className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded shadow-lg transition"
+        variant="emerald"
+        size="md"
+        shape="rounded"
+        fullWidth
       >
-        Authorize SAHYOG Dispatch
-      </button>
+        <ShieldCheck className="w-4 h-4 mr-1.5" />
+        <span>Authorize SAHYOG Dispatch</span>
+      </ShinyButton>
     </div>
   );
 }

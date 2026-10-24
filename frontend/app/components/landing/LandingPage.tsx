@@ -4,6 +4,8 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
+import { ShinyButton } from '@/components/ui/shiny-button';
+import { ArrowRight } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -124,15 +126,15 @@ export default function LandingPage({ onLaunch }: { onLaunch: () => void }) {
         />
 
         {/* Launch Website Button Overlay */}
-        <div className="absolute bottom-16 w-full flex flex-col items-center justify-center launch-btn-container z-30">
-          <button
+        <div className="absolute bottom-12 md:bottom-16 w-full flex flex-col items-center justify-center launch-btn-container z-30">
+          <ShinyButton
             onClick={handleLaunch}
-            className="group relative px-10 py-4 rounded-full font-semibold text-lg tracking-widest text-white uppercase backdrop-blur-xl bg-blue-600/20 hover:bg-blue-600/35 border border-blue-400/40 hover:border-blue-300/70 shadow-[0_8px_32px_0_rgba(37,99,235,0.25)] hover:shadow-[0_8px_32px_0_rgba(59,130,246,0.45)] transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+            size="md"
+            className="shadow-[0_8px_30px_0_rgba(2,132,199,0.35)]"
           >
-            <span className="relative z-10 flex items-center justify-center text-blue-100 group-hover:text-white transition-colors duration-200">
-              Launch Forensic Suite
-            </span>
-          </button>
+            <span>Launch Forensic Suite</span>
+            <ArrowRight className="w-3.5 h-3.5 opacity-80 group-hover:translate-x-0.5 transition-transform duration-200" />
+          </ShinyButton>
         </div>
       </div>
     </div>

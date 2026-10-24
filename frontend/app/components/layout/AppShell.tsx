@@ -41,13 +41,17 @@ export default function AppShell({
       <aside className="w-72 bg-white border-r border-slate-200 flex flex-col z-20 shrink-0 select-none shadow-xs">
         
         {/* Brand Header */}
-        <div className="h-20 flex items-center px-6 border-b border-slate-200 space-x-3.5">
-          <div className="w-10 h-10 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center shadow-xs">
-            <Hexagon className="w-5 h-5 text-[#1B729E]" strokeWidth={2.2} />
+        <div className="h-20 flex items-center px-5 border-b border-slate-200 space-x-3">
+          <div className="w-11 h-11 rounded-xl bg-white border border-slate-200 p-1 flex items-center justify-center shadow-xs overflow-hidden shrink-0">
+            <img 
+              src="/logo.png" 
+              alt="PHANTASM Logo" 
+              className="w-full h-full object-contain"
+            />
           </div>
           <div className="flex flex-col">
-            <span className="text-base tracking-tight font-bold text-slate-900">PHANTASM</span>
-            <span className="text-[10px] font-mono tracking-wider text-slate-500 uppercase font-semibold">LEGAL INTELLIGENCE</span>
+            <span className="text-base tracking-tight font-extrabold text-slate-900 leading-tight font-mono">PHANTASM</span>
+            <span className="text-[9.5px] font-mono tracking-widest text-[#1B729E] uppercase font-bold">TRACK • HUNT • SECURE</span>
           </div>
         </div>
         
@@ -61,20 +65,18 @@ export default function AppShell({
             const Icon = stage.icon;
             const isActive = activeStage === stage.id;
             const isCompleted = activeStage > stage.id;
-            const isClickable = stage.id <= (activeCase ? 4 : 3) && onStepChange;
+            const isClickable = Boolean(onStepChange);
 
             return (
               <button
                 key={stage.id}
                 type="button"
-                disabled={!isClickable && stage.id !== activeStage}
-                onClick={() => isClickable && onStepChange?.(stage.id)}
+                disabled={!isClickable}
+                onClick={() => onStepChange?.(stage.id)}
                 className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-150 text-left group ${
                   isActive
                     ? 'bg-sky-50 border border-sky-200 text-[#1B729E] font-semibold shadow-xs'
-                    : isCompleted
-                      ? 'bg-transparent text-slate-700 hover:bg-slate-100 hover:text-slate-900'
-                      : 'bg-transparent text-slate-400 hover:text-slate-600 cursor-not-allowed'
+                    : 'bg-transparent text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer'
                 }`}
               >
                 <div className="flex items-center space-x-3">
@@ -126,13 +128,18 @@ export default function AppShell({
         
         {/* Top Header */}
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-10 shadow-2xs">
-          <div>
-            <h2 className="font-display text-lg font-bold tracking-wider uppercase text-slate-900">
-              Investigation Suite
-            </h2>
-            <p className="text-[11px] text-slate-500">
-              Lawful Attribution & Crypto Asset Tracking
-            </p>
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-lg overflow-hidden border border-slate-200 bg-white p-0.5 flex items-center justify-center shrink-0 shadow-2xs">
+              <img src="/logo.png" alt="Phantasm" className="w-full h-full object-contain" />
+            </div>
+            <div>
+              <h2 className="font-display text-base font-bold tracking-wider uppercase text-slate-900 leading-tight">
+                Investigation Suite
+              </h2>
+              <p className="text-[10.5px] text-slate-500 font-mono">
+                Lawful Attribution & Crypto Asset Tracking
+              </p>
+            </div>
           </div>
 
           {/* Officer Session Indicator */}

@@ -1,3 +1,5 @@
+import pytest
+pytest.importorskip("torch")
 from app.ml.graph_dataset import EllipticDatasetLoader
 
 

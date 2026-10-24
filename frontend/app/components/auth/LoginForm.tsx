@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { ShinyButton } from "@/components/ui/shiny-button";
+import { Lock } from "lucide-react";
 
 export default function LoginForm() {
   const [userId, setUserId] = useState("");
@@ -63,12 +65,18 @@ export default function LoginForm() {
             />
           </div>
 
-          <button 
-            type="submit"
-            className="w-full mt-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/30 transition duration-200"
-          >
-            Authenticate & Proceed
-          </button>
+          <div className="pt-2">
+            <ShinyButton 
+              type="submit"
+              variant="brand"
+              size="md"
+              shape="rounded"
+              fullWidth
+            >
+              <Lock className="w-3.5 h-3.5 mr-1.5" />
+              <span>Authenticate & Proceed</span>
+            </ShinyButton>
+          </div>
         </form>
       </div>
     </div>

@@ -15,11 +15,22 @@ import {
   Building,
   Radio,
   ExternalLink,
-  Compass
+  Compass,
+  ArrowLeft,
+  Edit3
 } from 'lucide-react';
 import BlockchainGraph from './BlockchainGraph';
+import { ShinyButton } from '@/components/ui/shiny-button';
 
-export default function CaseWorkspace({ caseId, seedAddress }: { caseId: string; seedAddress: string }) {
+export default function CaseWorkspace({ 
+  caseId, 
+  seedAddress,
+  onBackToSeed
+}: { 
+  caseId: string; 
+  seedAddress: string;
+  onBackToSeed?: () => void;
+}) {
   const [traceState, setTraceState] = useState('IDLE');
   const [traceResult, setTraceResult] = useState<any>(null);
   const [caseData, setCaseData] = useState<any>(null);
@@ -127,13 +138,23 @@ export default function CaseWorkspace({ caseId, seedAddress }: { caseId: string;
     <div className="h-full flex flex-col space-y-5">
       
       {/* Top Header Card */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col md:flex-row justify-between items-start md:items-center shadow-2xs">
+      <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col md:flex-row justify-between items-start md:items-center shadow-2xs gap-4">
         <div>
-          <div className="flex items-center space-x-3 mb-1.5">
+          <div className="flex items-center space-x-3 mb-1.5 flex-wrap gap-y-1">
             <h1 className="text-xl font-bold text-slate-900 tracking-tight">Case: {caseId}</h1>
             <span className="bg-sky-50 text-[#1B729E] border border-sky-200/80 px-2.5 py-0.5 rounded-md text-xs font-semibold font-mono tracking-wider">
               ACTIVE
             </span>
+            {onBackToSeed && (
+              <button
+                onClick={onBackToSeed}
+                className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-lg border border-slate-300 bg-slate-50 hover:bg-white text-slate-700 hover:text-[#1B729E] hover:border-[#1B729E] text-xs font-semibold shadow-2xs transition-all cursor-pointer group"
+                title="Go back to Step 3: Target Seed Address"
+              >
+                <ArrowLeft className="w-3.5 h-3.5 text-slate-500 group-hover:text-[#1B729E] transition-colors" />
+                <span>Go Back to Target Seed Wallet</span>
+              </button>
+            )}
           </div>
           <p className="text-slate-600 text-xs flex items-center">
             <FileText className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
@@ -143,13 +164,24 @@ export default function CaseWorkspace({ caseId, seedAddress }: { caseId: string;
           </p>
         </div>
         
-        <div className="mt-3 md:mt-0 flex flex-col md:items-end">
+        <div className="flex flex-col md:items-end">
           <div className="flex items-center text-xs font-semibold text-emerald-700 mb-1">
             <CheckCircle2 className="w-4 h-4 mr-1 text-emerald-600" />
             Lawful Status Verified
           </div>
-          <div className="text-xs text-slate-600 font-mono bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200">
-            Seed: <span className="text-slate-900 font-semibold">{seedAddress}</span>
+          <div className="flex items-center space-x-2">
+            <div className="text-xs text-slate-600 font-mono bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200">
+              Seed: <span className="text-slate-900 font-semibold">{seedAddress}</span>
+            </div>
+            {onBackToSeed && (
+              <button
+                onClick={onBackToSeed}
+                className="text-slate-500 hover:text-[#1B729E] bg-slate-50 hover:bg-sky-50 p-1 rounded-md border border-slate-200 transition-colors"
+                title="Change or Edit Seed Wallet"
+              >
+                <Edit3 className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -163,19 +195,21 @@ export default function CaseWorkspace({ caseId, seedAddress }: { caseId: string;
           {/* Canvas Window Header */}
           <div className="bg-slate-50 px-4 py-2.5 border-b border-slate-200 flex items-center justify-between">
             <div className="flex items-center space-x-2.5">
-              <Network className="w-4 h-4 text-[#1B729E]" />
-              <h2 className="text-xs font-bold text-slate-700 uppercase tracking-wider">Graph Resolution Engine</h2>
+              <div className="w-5 h-5 rounded overflow-hidden flex items-center justify-center shrink-0">
+                <img src="/logo.png" alt="Phantasm" className="w-full h-full object-contain" />
+              </div>
+              <h2 className="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono">Graph Resolution Engine</h2>
               {traceState === 'COMPLETED' && (
                 <span className="bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-2 py-0.5 rounded text-[10px] font-mono font-semibold flex items-center">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse" />
-                  3-HOP ATTR PATH ACTIVE
+                  {traceResult?.hop_count !== undefined ? `${traceResult.hop_count}-HOP` : '3-HOP'} ATTR PATH ACTIVE
                 </span>
               )}
             </div>
             <div className="flex items-center space-x-2">
               {traceState === 'COMPLETED' && (
                 <span className="text-[11px] font-mono text-slate-500 font-medium hidden sm:inline">
-                  Destination: <span className="text-slate-800 font-bold">{traceResult?.vasp_node || 'vasp_exchange_dynamic'}</span>
+                  Destination: <span className="text-slate-800 font-bold">{traceResult?.vasp_name || traceResult?.vasp_node || 'vasp_exchange_dynamic'}</span>
                 </span>
               )}
               <div className="flex items-center space-x-1.5 pl-2">
@@ -199,11 +233,15 @@ export default function CaseWorkspace({ caseId, seedAddress }: { caseId: string;
               <div className="flex-1 flex items-center justify-center p-8 [background-image:radial-gradient(#CBD5E1_1px,transparent_1px)] [background-size:20px_20px]">
                 <div className="relative z-20 bg-white/95 backdrop-blur-sm border-2 border-[#1B4B5A]/30 rounded-2xl p-6 sm:p-8 max-w-md text-center shadow-xl my-auto">
                   <div className="space-y-5">
-                    {/* Rotating Compass / Seal Icon Header */}
-                    <div className="relative w-16 h-16 mx-auto flex items-center justify-center">
-                      <Compass className="w-16 h-16 text-[#1B4B5A] animate-[spin_3s_linear_infinite] opacity-90" />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-4 h-4 rounded-full bg-[#1B4B5A]"></div>
+                    {/* Glowing Phantasm Wolf Emblem Ingestion Header */}
+                    <div className="relative w-28 h-28 mx-auto flex items-center justify-center">
+                      <div className="absolute inset-0 rounded-2xl bg-sky-400/20 animate-ping opacity-30" />
+                      <div className="relative w-24 h-24 rounded-2xl bg-white border-2 border-sky-200/80 shadow-md p-1.5 flex items-center justify-center overflow-hidden">
+                        <img 
+                          src="/logo.png" 
+                          alt="Phantasm Wolf" 
+                          className="w-full h-full object-contain filter drop-shadow-sm" 
+                        />
                       </div>
                     </div>
 
@@ -229,13 +267,17 @@ export default function CaseWorkspace({ caseId, seedAddress }: { caseId: string;
 
                     {/* CTA Button to start ingestion */}
                     {traceState === 'IDLE' && (
-                      <button
+                      <ShinyButton
                         onClick={startTrace}
-                        className="w-full bg-[#1B4B5A] hover:bg-[#153B47] text-white font-bold py-3 px-6 rounded-md text-xs uppercase tracking-[0.18em] transition-all shadow-md flex items-center justify-center space-x-2 group"
+                        variant="primary"
+                        size="md"
+                        shape="rounded"
+                        fullWidth
+                        className="shadow-lg shadow-sky-950/40"
                       >
-                        <Play className="w-4 h-4 text-[#D9C9A8] fill-current" />
+                        <Play className="w-3.5 h-3.5 text-sky-400 fill-current" />
                         <span>START INK-TRACE INGESTION</span>
-                      </button>
+                      </ShinyButton>
                     )}
                   </div>
                 </div>
@@ -260,13 +302,16 @@ export default function CaseWorkspace({ caseId, seedAddress }: { caseId: string;
                 <p className="text-xs text-slate-600 mb-4 leading-relaxed">
                   Fetch live on-chain UTXO / account transaction ledger data and expand the multigraph entity tree.
                 </p>
-                <button 
+                <ShinyButton 
                   onClick={startTrace}
-                  className="w-full bg-[#1B729E] hover:bg-[#155E82] text-white font-semibold text-xs py-2.5 rounded-lg flex items-center justify-center transition-all shadow-xs"
+                  variant="brand"
+                  size="md"
+                  shape="rounded"
+                  fullWidth
                 >
-                  <Play className="w-3.5 h-3.5 mr-1.5 fill-current" />
-                  START INGESTION
-                </button>
+                  <Play className="w-3.5 h-3.5 fill-current" />
+                  <span>START INGESTION</span>
+                </ShinyButton>
               </>
             ) : traceState === 'COMPLETED' ? (
               <>
@@ -274,7 +319,7 @@ export default function CaseWorkspace({ caseId, seedAddress }: { caseId: string;
                 <p className="text-xs text-slate-600 mb-4 leading-relaxed">
                   The evidence has been sealed with cryptographic Merkle proof bundles. Download the court-ready forensic PDF.
                 </p>
-                <button 
+                <ShinyButton 
                   onClick={() => {
                     if (traceResult?.dossier_url) {
                       window.open(traceResult.dossier_url, '_blank');
@@ -282,11 +327,14 @@ export default function CaseWorkspace({ caseId, seedAddress }: { caseId: string;
                       window.open(`${API_URL}/api/v1/dossiers/generate/${caseId}`, '_blank');
                     }
                   }}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs py-2.5 rounded-lg flex items-center justify-center transition-all shadow-xs"
+                  variant="emerald"
+                  size="md"
+                  shape="rounded"
+                  fullWidth
                 >
-                  <Download className="w-3.5 h-3.5 mr-1.5" />
-                  DOWNLOAD FORENSIC DOSSIER (PDF)
-                </button>
+                  <Download className="w-3.5 h-3.5" />
+                  <span>DOWNLOAD FORENSIC DOSSIER (PDF)</span>
+                </ShinyButton>
               </>
             ) : (
               <div className="space-y-2">
